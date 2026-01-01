@@ -1,32 +1,42 @@
-from HallManagementloay import *
-from MovieManagementahmed import *
-from Ticketingseif import *
+from functions import *
 user_name = input("Please enter your name")
 
 check = True
 while not admin_choise.isdigit():
     admin_choise = int(input("Are you admin or user(1/2)"))
-    if admin_choise == 1:
-        pass
-    elif  admin_choise == 2:
-        while not admin_choise.isdigit():
-            user_chiose = int(input("Do you want family or single ticket(1/2)"))
-            if user_chiose == 1:
-                f_chosen_movie,ticket_num = book_single_ticket()
-            elif user_chiose == 2:
-                kid_num , kids = book_family_ticket()
-            else:
-                print("wrong input please choose (1/2)")
-            combo = input("Do you want combo?(y/n)").lower()
-            while combo !="y" or combo != "n":
-                combo = input("please choose (y/n)").lower()
-            if combo == "y":
-                combo_total = book_combos()
-            snacks = input("Do you want snacks?(y/n)").lower()
-            while snacks !="y" or snacks != "n":
-                combo = input("please choose (y/n)").lower()
-            if combo == "y":
-                snacks_total = book_snacks()
 
-    else:
-        print("wrong input please choose (1/2)")
+    if admin_choise == 1:
+        admin=int(input("data_report(1):read_halls(2):add_movie(3):Movie_xchange(4):swap_halls(5):"))
+        if admin==1:
+            sales_report()
+        elif admin==2:
+            print("read halls")
+        elif admin==3:
+            print("add movie")
+        elif admin==4:
+            xchange()
+        elif admin==5:
+            swap()
+
+    elif  admin_choise == 2:
+        user=int(input("search_movies(1):schedule_show(2):book_single(3):book_family(4):calculate_price(5):book_snacks(6):book_combo(7):cancel_ticket(8)"))
+        if user==1:
+            print("search movies")
+        elif user==2:
+            print("schedule show")
+        elif user==3:
+            print("book single")
+        elif user==4:
+            print("book family")
+        elif user==5:
+            print("calculate price")
+        elif user==6:
+            book_snacks()
+        elif user==7:
+            book_combos()
+        elif user==8:
+            print("cancle ticket")
+
+
+            
+
