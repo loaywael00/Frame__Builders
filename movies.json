@@ -1,0 +1,46 @@
+{
+  "movies": [
+    {
+      "title": "avatar 2",
+      "genre": "Sci-Fi",
+      "duration": 180,
+      "rating": 8.5
+    },
+    {
+      "title": "avengers",
+      "genre": "Action",
+      "duration": 95,
+      "rating": 8.0
+    },
+    {
+      "title": "push",
+      "genre": "Sci-Fi",
+      "duration": 180,
+      "rating": 8.5
+    },
+    {
+      "title": "inside out 2",
+      "genre": "Animation",
+      "duration": 95,
+      "rating": 8.0
+    },
+    {
+      "title": "la la land",
+      "genre": "comedy",
+      "duration": 120,
+      "rating": 8.5
+    },
+    {
+      "title": "ww",
+      "genre": "action",
+      "duration": 120,
+      "rating": 9.0,
+      "price": 120,
+      "s-tickets": 120,
+      "f-tickets": 90,
+      "id": 1,
+      "name": "b1",
+      "seats": 90
+    }
+  ]
+}
