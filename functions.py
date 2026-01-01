@@ -175,3 +175,119 @@ def assign_halls():
     with open("movies.json", "w", encoding="utf-8") as file:
         json.dump(data, file, ensure_ascii=False, indent=2)
     print("\n Movie replaced successfully")
+m , c , cost= [] , 0 , 0
+for i in movies["movies"]:
+    m.append(f"{1+c}_{i['title']}")
+    c = c + 1
+print(m)
+def book_single_ticket():
+    """Generates a sales report (tickets, snacks, combos, revenue)"""
+    ticket_type = ""
+    movie_num = input("please choose the number of the movie: ")
+    while int(movie_num) > len(m):
+        movie_num = input("wrong, please choose from the list: ")
+    while not movie_num.isdigit():
+        movie_num = input("wrong input,please enter a number: ")
+    f_chosen_movie = m[int(movie_num)]
+    ticket_num = input("How many tickets do you want: ")
+    while not ticket_num.isdigit():
+        ticket_num = input("wrong input,please enter a number: ")
+    # print(f"Ticket information: \nYour movie is: {m[int(movie_num)-1]} \nType of ticket : single {ticket_type}\nNumber of tickets {ticket_num}\n ")
+    return m[int(movie_num)-1] ,ticket_num 
+f_chosen_movie,ticket_num = book_single_ticket()
+HALL_CAPACITY = 80  # fixed total seats per hall/movie
+
+def cancel_tickets():
+
+    titles = [m.get("title", "Untitled") for m in movies["movies"]]
+    print("Movies:")
+    for i, t in enumerate(titles, start=1):
+        print(f"{i}. {t}")
+
+
+    movie_index = -1
+    while True:
+        choice = input(f"Choose movie number (1..{len(titles)}): ").strip()
+        if choice.isdigit():
+            num = int(choice)
+            if 1 <= num <= len(titles):
+                movie_index = num - 1
+                break
+        print("Please enter a valid number from the list.")
+
+    mv = movies["movies"][movie_index]
+
+
+    s_now = int(mv.get("s-tickets"))
+    f_now = int(mv.get("f-tickets"))
+
+
+    seats_available = 80 - (s_now + f_now)
+    if seats_available < 0:
+        seats_available = 0
+
+
+    print(f"Current s-tickets: {s_now}, f-tickets: {f_now}, seats available: {seats_available}")
+
+
+    while True:
+        s_txt = input("How many single tickets do you want to cancel? ").strip()
+        if s_txt.isdigit():
+            s_cancel = int(s_txt)
+            if s_cancel <= s_now:
+                break
+            else:
+                print(f"You cannot cancel more than current s-tickets ({s_now}). Try again.")
+        else:
+            print("Please enter a non-negative integer (e.g., 0, 1, 2, ...).")
+
+
+    while True:
+        f_txt = input("How many family tickets do you want to cancel? ").strip()
+        if f_txt.isdigit():
+            f_cancel = int(f_txt)
+            if f_cancel <= f_now:
+                break
+            else:
+                print(f"You cannot cancel more than current f-tickets ({f_now}). Try again.")
+        else:
+            print("Please enter a non-negative integer (e.g., 0, 1, 2, ...).")
+
+    s_new = s_now - s_cancel
+    f_new = f_now - f_cancel
+
+
+
+    seats_new = 80 - (s_new + f_new)
+    if seats_new < 0:
+        seats_new = 0
+    mv["s-tickets"] = s_new
+    mv["f-tickets"] = f_new
+    mv["seats"] = seats_new  
+    print(
+        f"Updated '{mv.get('title','')}': "
+        f"s-tickets={s_new} ({s_cancel}), "
+        f"f-tickets={f_new} ({f_cancel}), "
+        f"seats available={seats_new} [capacity={80}]"
+    ) 
+
+def book_family_ticket():
+    """Books multiple seats as a family ticket (supports normal/VIP mix)"""
+    kid_num = input("How many kids do you have? ")
+    while not kid_num.isdigit():
+        kid_num = input("Wrong, Please enter a number ")
+    kids_area = input("Do you want to reserve a kids area for them? (y/n)")
+    while kids_area not in ["y", "n"]:
+        kids_area = input("wrong, Do you want to reserve a kids area for them? (y/n)").lower()
+    if kids_area == "y":
+        kids = f"Number of kids tickets in kids area: {kid_num}"
+    return kid_num, kids
+kid_num , kids = book_family_ticket()
+
+def Calculate_Price():
+    for movie in movies["movies"]:
+        if movie["title"].lower() == f_chosen_movie.lower():
+            cost = movie['price'] * (ticket_num + 0.5 * kid_num) + combo_total +snacks_total
+        print(f"The final price is {cost}")
+
+print(movies['movies'][m[int(f_chosen_movie)-1]]['price'])
