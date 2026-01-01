@@ -22,4 +22,19 @@ while not admin_choise.isdigit():
         elif user==2:
             print("schedule show")
         elif user==3:
+            f_chosen_movie,ticket_num = book_single_ticket()
+        elif user==4:
+            kid_num , kids = book_family_ticket()
+        elif user==5:
+            Calculate_Price()
+        elif user==6:
+            book_snacks()
+        elif user==7:
+            book_combos()
+        elif user==8:
+            print("cancle ticket")
+
+
+            cancel_tickets()
+            
 
