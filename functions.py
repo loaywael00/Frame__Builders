@@ -120,7 +120,7 @@ def swap():
     min_first = min(first_three, key=lambda m: m["s-tickets"] + m["f-tickets"])
     min_first_total = min_first["s-tickets"] + min_first["f-tickets"]
     #   Highest revenues from the 2 small halls
-    next_two = movies[3:5]
+    next_two = movies[3:]
     max_next = max(next_two, key=lambda m: m["s-tickets"] + m["f-tickets"])
     max_next_total = max_next["s-tickets"] + max_next["f-tickets"]
     # Print values of 2 chooosen halls
