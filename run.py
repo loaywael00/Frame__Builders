@@ -1,40 +1,487 @@
-from functions import *
-user_name = input("Please enter your name")
 
-check = True
-while not admin_choise.isdigit():
-    admin_choise = int(input("Are you admin or user(1/2)"))
+# Seif
+import json
+total = 0
+with open('movies.json', 'r', encoding='utf-8') as file:
+    movies = json.load(file)
+def book_snacks():
+    items = [
+        ("Popcorn Small", 80),
+        ("Popcorn Large", 110),
+        ("Nachos", 95),
+        ("Fries", 50),
+        ("Hot Dog", 85),
+        ("Burger", 120),
+        ("Pizza Slice", 90),
+        ("Pepsi", 40),
+        ("Red bull", 90),
+        ("Water", 25),
+        ("Chocolate", 35),
+        ("Ice Cream", 45)
+    ]
+    print("_snacks list_")
+    for i in range(len(items)):
+        name, price = items[i]
+        print(f"{i+1}_{name}_{price} LE")
+    print("0_finish and print receipt")
+    cart={}
+    while True:
+        pick_item=int(input('enter item num:__(0 to finish)'))
+        if pick_item == 0:
+            break
+        elif pick_item >= 1 and pick_item <= len(items):
+            index = pick_item - 1
+            item_name, item_price = items[index]
+            quantity_text = int(input(f"Enter quantity for {item_name}: "))
+            if quantity_text > 0:
+                # to add items on cart
+                cart[item_name] = cart.get(item_name, 0) + quantity_text
+                print(f"Added {quantity_text} x {item_name}.")
+            else:
+                print("Quantity must be greater than 0")
+        else:
+            print("sorry, out of the range")
+    print("\n_Receipt_")
+    if len(cart) == 0:
+        print("No items selected.")
+        print("Total: 0 LE")
+        return 0
+    snacks_total = 0
+    for i in range(len(items)):
+        name, price = items[i]
+        if name in cart:
+            quantity_text = cart[name]
+            line_total = price * quantity_text
+            snacks_total += line_total
+            print(f"- {name}: {quantity_text} x {price} = {line_total} LE")
+    print(f"\nTotal: {snacks_total} LE")
+    total =total+ snacks_total
+    return snacks_total
 
-    if admin_choise == 1:
-        admin=int(input("data_report(1):read_halls(2):add_movie(3):Movie_xchange(4):swap_halls(5):"))
-        if admin==1:
+def book_combos():
+    combos = [
+        ("Pepsi + Fries", 60, 90),        
+        ("2x Popcorn", 170, 200),         
+        ("Burger + Pepsi", 140, 160),     
+        ("Pizza Slice + Pepsi", 120, 130),
+        ("Hot Dog + Fries", 120, 135)     
+    ]
+    print("_Cinema Combos Menu_")
+    for i in range(len(combos)):
+        name, discount_price, normal_price = combos[i]
+        print(f"{i+1}_ {name} _ {discount_price} LE (instead of {normal_price} LE)")
+    print("0_Finish and print receipt")
+    cart = {}
+    while True:
+        combo_item=int(input('enter combo num:__(0 to finish)'))
+        if combo_item == 0:
+            break
+        elif combo_item >= 1 and combo_item <= len(combos):
+            index = combo_item - 1
+            combo_name, discount_price, normal_price = combos[index]
+            quantity_text = int(input(f"Enter quantity for {combo_name}: "))
+            if quantity_text > 0:
+                # to add combo on cart
+                cart[combo_name] = cart.get(combo_name, 0) + quantity_text
+                print(f"Added {quantity_text} x {combo_name}.")
+            else:
+                print("Quantity must be greater than 0")
+        else:
+            print("sorry, out of the range")
 
-        elif admin==2:
-            print("read halls")
-        elif admin==3:
-            print("add movie")
-        elif admin==4:
+    print("\n_Receipt_")
+    if len(cart) == 0:
+        print("No items selected.")
+        print("Total: 0 LE")
+        return 0
+    combo_total = 0
+    for i in range(len(combos)):
+        name, discount_price, normal_price = combos[i]
+        if name in cart:
+            quantity_text = cart[name]
+            line_total = discount_price * quantity_text
+            combo_total += line_total
+            print(f"- {name}: {quantity_text} x {discount_price} = {line_total} LE")
+    print(f"\nTotal: {combo_total} LE")
+    total = total+ combo_total
+    return combo_total
 
-    elif  admin_choise == 2:
-        user=int(input("search_movies(1):schedule_show(2):book_single(3):book_family(4):calculate_price(5):book_snacks(6):book_combo(7):cancel_ticket(8)"))
-        if user==1:
-            print("search movies")
-        elif user==2:
-            print("schedule show")
-        elif user==3:
-            f_chosen_movie,ticket_num = book_single_ticket()
-        elif user==4:
-            kid_num , kids = book_family_ticket()
-        elif user==5:
-            Calculate_Price()
-        elif user==6:
-            book_snacks()
-        elif user==7:
-            book_combos()
-        elif user==8:
-            print("cancle ticket")
+def sales_report():
+    print("\n Ticket Summary:\n")
+    with open('movies.json', 'r', encoding='utf-8') as file:
+        movies = json.load(file)
+    for movie in movies["movies"]:
+        print(movie["title"])
+        print("s-tickets:", movie["s-tickets"])
+        print("revenue =", movie["s-tickets"]*200)
+        print("f-tickets:", movie["f-tickets"])
+        print("revenue =", movie["f-tickets"]*160)
+        print("_")
+
+def swap():
+    with open("movies.json", "r", encoding="utf-8") as file:
+        movies = json.load(file)["movies"]
+    #     Lower revenues from the 3 big halls
+    first_three = movies[:3]
+    min_first = min(first_three, key=lambda m: m["s-tickets"] + m["f-tickets"])
+    min_first_total = min_first["s-tickets"] + min_first["f-tickets"]
+    #   Highest revenues from the 2 small halls
+    next_two = movies[3:]
+    max_next = max(next_two, key=lambda m: m["s-tickets"] + m["f-tickets"])
+    max_next_total = max_next["s-tickets"] + max_next["f-tickets"]
+    # Print values of 2 chooosen halls
+    print(min_first["title"])
+    print("s-tickets:", min_first["s-tickets"])
+    print("f-tickets:", min_first["f-tickets"])
+    print("total:", min_first_total)
+    print("___")
+    print(max_next["title"])
+    print("s-tickets:", max_next["s-tickets"])
+    print("f-tickets:", max_next["f-tickets"])
+    print("total:", max_next_total)
+    print("___")
+    if min_first_total < max_next_total:
+        print("We will exchange films.")
+    else:
+        print("No exchange.")
+
+def xchange():
+    with open("movies.json", "r", encoding="utf-8") as file:
+        data = json.load(file)
+    #     Replacing film
+    index = int(input("Enter movie number to replace (1 to 5): ")) - 1
+    # Get inputs from admin
+    print(" Enter new movie details:")
+    title = input("Title: ")
+    genre = input("Genre: ")
+    duration = int(input("Duration (minutes): "))
+    rating = float(input("Rating: "))
+    price = int(input("Price: "))
+    s_tickets = int(input("Single Tickets: "))
+    f_tickets = int(input("Family Tickets: "))
+    hall_id = int(input("Hall ID: "))
+    hall_name = input("Hall Name: ")
+    seats = int(input("Seats: "))
+    # Import or save this data
+    new_movie = {
+        "title": title,
+        "genre": genre,
+        "duration": duration,
+        "rating": rating,
+        "price": price,
+        "s-tickets": s_tickets,
+        "f-tickets": f_tickets,
+        "id": hall_id,
+        "name": hall_name,
+        "seats": seats
+    }
+    # Replacing in right place
+    data["movies"][index] = new_movie
+    # Save changes in json file
+    with open("movies.json", "w", encoding="utf-8") as file:
+        json.dump(data, file, ensure_ascii=False, indent=2)
+    print("\n Movie replaced successfully")
+m , c , cost= [] , 0 , 0
+for i in movies["movies"]:
+    m.append(f"{1+c}_{i['title']}")
+    c = c + 1
 
 
-            cancel_tickets()
-            
+DEFAULT_CAPACITY = 80  
+def book_single_ticket():
+
+    # Show numbered list
+    titles = [m.get("title", "Untitled") for m in movies["movies"]]
+    print("Movies:")
+    for i, t in enumerate(titles, start=1):
+        print(f"{i}. {t}")
+
+    # Choose movie (1..N)
+    movie_index = -1
+    while True:
+        choice = input(f"Choose movie number (1..{len(titles)}): ").strip()
+        if choice.isdigit():
+            num = int(choice)
+            if 1 <= num <= len(titles):
+                movie_index = num - 1
+                break
+        print("Please enter a valid number from the list.")
+
+    # Ask amount to add (non-negative int)
+    add_count = 0
+    while True:
+        s = input("How many SINGLE tickets do you want to add? ").strip()
+        if s.isdigit():
+            add_count = int(s)
+            break
+        print("Please enter a non-negative integer (e.g., 0, 1, 2, ...).")
+        total = total + s
+    # Update s-tickets and recompute seats from capacity
+    movie = movies["movies"][movie_index]
+    s_now = int(movie.get("s-tickets", 0))
+    f_now = int(movie.get("f-tickets", 0))
+    capacity = int(movie.get("capacity", DEFAULT_CAPACITY))
+
+    s_new = s_now + add_count
+    seats_new = capacity - (s_new + f_now)
+    if seats_new < 0: seats_new = 0
+
+    movie["s-tickets"] = s_new
+    movie["seats"] = seats_new
+
+    # Save
+    with open("movies.json", "w", encoding="utf-8") as f:
+        json.dump(data, f, ensure_ascii=False, indent=2)
+
+    print(
+        f"Updated '{movie.get('title','')}': "
+        f"s-tickets={s_new} (+{add_count}), "
+        f"f-tickets={f_now}, "
+        f"seats available={seats_new} [capacity={capacity}]"
+    )
+
+def book_family_ticket():
+ 
+    # Show numbered list
+    titles = [m.get("title", "Untitled") for m in movies["movies"]]
+    print("Movies:")
+    for i, t in enumerate(titles, start=1):
+        print(f"{i}. {t}")
+
+    movie_index = -1
+    while True:
+        choice = input(f"Choose movie number: ").strip()
+        if choice.isdigit():
+            num = int(choice)
+            if 1 <= num <= len(titles):
+                movie_index = num - 1
+                break
+        print("Please enter a valid number from the list.")
+    add_count = 0
+    while True:
+        s = input("How many SINGLE tickets do you want to add? ").strip()
+        if s.isdigit():
+            add_count = int(s)
+            break
+        print("Please enter a non-negative integer (e.g., 0, 1, 2, ...).")
+        total =total + s * 160
+    # Update s-tickets
+    movie = movies["movies"][movie_index]
+    s_now = int(movie.get("s-tickets", 0))
+    f_now = int(movie.get("f-tickets", 0))
+    capacity = int(movie.get("capacity", DEFAULT_CAPACITY))
+
+    s_new = s_now + add_count
+    seats_new = capacity - (s_new + f_now)
+    if seats_new < 0: seats_new = 0
+
+    movie["s-tickets"] = s_new
+    movie["seats"] = seats_new
+
+    # Save
+    with open("movies.json", "w", encoding="utf-8") as f:
+        json.dump(movies, f, ensure_ascii=False, indent=2)
+
+    print(
+        f"Updated '{movie.get('title','')}': "
+        f"s-tickets={s_new} (+{add_count}), "
+        f"f-tickets={f_now}, "
+        f"seats available={seats_new} [capacity={capacity}]"
+    )
+
+
+
+def cancel_tickets():
+    titles = [m.get("title", "Untitled") for m in movies["movies"]]
+    print("Movies:")
+    for i, t in enumerate(titles, start=1):
+        print(f"{i}. {t}")
+    movie_index = -1
+    while True:
+        choice = input(f"Choose movie number (1..{len(titles)}): ").strip()
+        if choice.isdigit():
+            num = int(choice)
+            if 1 <= num <= len(titles):
+                movie_index = num - 1
+                break
+        print("Please enter a valid number from the list.")
+    mv = movies["movies"][movie_index]
+    s_now = int(mv.get("s-tickets"))
+    f_now = int(mv.get("f-tickets"))
+    seats_available = 80 - (s_now + f_now)
+    if seats_available < 0:
+        seats_available = 0
+    print(f"Current s-tickets: {s_now}, f-tickets: {f_now}, seats available: {seats_available}")
+    while True:
+        s_txt = input("How many single tickets do you want to cancel? ").strip()
+        if s_txt.isdigit():
+            s_cancel = int(s_txt)
+            if s_cancel <= s_now:
+                break
+            else:
+                print(f"You cannot cancel more than current s-tickets ({s_now}). Try again.")
+        else:
+            print("Please enter a non-negative integer (e.g., 0, 1, 2, ...).")
+    while True:
+        f_txt = input("How many family tickets do you want to cancel? ").strip()
+        if f_txt.isdigit():
+            f_cancel = int(f_txt)
+            if f_cancel <= f_now:
+                break
+            else:
+                print(f"You cannot cancel more than current f-tickets ({f_now}). Try again.")
+        else:
+            print("Please enter a non-negative integer (e.g., 0, 1, 2, ...).")
+
+    s_new = s_now - s_cancel
+    f_new = f_now - f_cancel
+    seats_new = 80 - (s_new + f_new)
+    if seats_new < 0:
+        seats_new = 0
+    mv["s-tickets"] = s_new
+    mv["f-tickets"] = f_new
+    mv["seats"] = seats_new  
+    print(
+        f"Updated '{mv.get('title','')}': "
+        f"s-tickets={s_new} ({s_cancel}), "
+        f"f-tickets={f_new} ({f_cancel}), "
+        f"seats available={seats_new} [capacity={80}]"
+    ) 
+
+
+# def Calculate_Price():
+#     for movie in movies["movies"]:
+#         if movie["title"].lower() == f_chosen_movie.lower():
+#             cost = movie['price'] * (ticket_num + 0.5 * kid_num) + combo_total + snacks_total
+#         print(f"The final price is {cost}")
+#     print(movies['movies'][m[int(f_chosen_movie)-1]]['price'])
+#     return
+
+def read_movies():
+   with open("movies.json") as f:
+    data= json.load(f)
+   for movie in data["movies"]:
+      print(movie)
+
+def schedule_movies():
+   with open("schedule.json") as k:
+    data= json.load(k)
+   for schedule  in data["schedule"]:
+      print(schedule)
+
+def read_halls():
+        with open("halls.json", "r") as y:
+            data = json.load(y)
+            for hall in data:
+                print(hall)
+
+def search_movie():
+    print("choose search method:")
+    print("1.  title")
+    print("2.  genre")
+    print("3.  rating")
+    choice=input("enter your choice (1/2/3): ")
+    with open("movies.json", "r") as f:
+        data = json.load(f)
+        movies = data["movies"]
+    matching = []
+    if choice == "1":
+        keyword = input("enter the movie title or part of it: ").lower()
+        for movie in movies:
+            if keyword in movie["title"].lower():
+                matching.append(movie)
+    elif choice == "2":
+        genre = input(" Enter the movie genre: ").lower()
+        for movie in movies:
+            if genre in movie["genre"].lower():
+                matching.append(movie)
+    elif choice == "3":
+        try:
+            rating = float(input(" enter the minimum rating: "))
+            for movie in movies:
+                if movie["rating"] >= rating:
+                    matching.append(movie)
+        except ValueError:
+            print("rating must be a number")
+            return None
+    else:
+        print("invalid choice")
+        return None
+    if matching:
+        print("matching movies:")
+        i = 1
+        for movie in matching:
+            print(f"{i}. {movie['title']} | genre: {movie['genre']} | duration: {movie['duration']} mins | rating: {movie['rating']}")
+            i += 1
+
+def add_movie():
+    with open("movies.json", "r", ) as file:
+        data = json.load(file)
+    print(" Enter new movie details:")
+    title = input("Title: ")
+    genre = input("Genre: ")
+    duration = int(input("Duration (minutes): "))
+    rating = float(input("Rating: "))
+    price = int(input("Price: "))
+    s_tickets = int(input("Single Tickets: "))
+    f_tickets = int(input("Family Tickets: "))
+    hall_id = int(input("Hall ID: "))
+    hall_name = input("Hall Name: ")
+    seats = int(input("Seats: "))
+    new_movie = {
+        "title": title,
+        "genre": genre,
+        "duration": duration,
+        "rating": rating,
+        "price": price,
+        "s-tickets": s_tickets,
+        "f-tickets": f_tickets,
+        "id": hall_id,
+        "name": hall_name,
+        "seats": seats
+    }
+    data["movies"].append(new_movie)
+    with open("movies.json", "w") as file:
+        json.dump(data, file, indent=2)
+    print(f"Movie '{title}' added successfully!")
+    print('you have added the new movie successfully!:')
+
+
+
+admin_choise = int(input("Are you admin or user(1/2)"))
+
+
+if admin_choise == 1:
+    admin=int(input("data_report(1):read_halls(2):add_movie(3):Movie_xchange(4):swap_halls(5):"))
+    if admin==1:
+        sales_report()
+    elif admin==2:
+        print("read halls")
+    elif admin==3:
+        add_movie()
+    elif admin==4:
+        xchange()
+    elif admin==5:
+        swap()
+
+elif  admin_choise == 2:
+    user=int(input("search_movies(1):schedule_show(2):book_single(3):book_family(4):calculate_price(5):book_snacks(6):book_combo(7):cancel_ticket(8)"))
+    if user==1:
+        search_movie()
+    elif user==2:
+        schedule_movies()
+    elif user==3:
+        book_single_ticket()
+    elif user==4:
+        book_family_ticket()
+    elif user==5:
+        print(total)
+        ######################
+        #calculate function
+    elif user==6:
+        combo_snacks = book_snacks()
+    elif user==7:
+        combo_total = book_combos()
+    elif user==8:
+        cancel_tickets()
 
