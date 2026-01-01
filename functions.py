@@ -139,7 +139,7 @@ def swap():
     else:
         print("No exchange.")
 
-def assign_halls():
+def xchange():
     with open("movies.json", "r", encoding="utf-8") as file:
         data = json.load(file)
     #     Replacing film
